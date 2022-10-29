@@ -1,0 +1,1 @@
+export type BodyColor = "BLACK" | "WHITE" | "GRAY" | "GREEN" | "RED" | "ORANGE";

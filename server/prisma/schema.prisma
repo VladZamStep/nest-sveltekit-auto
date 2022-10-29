@@ -1,0 +1,46 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Vehicle {
+  id        String    @id @default(uuid())
+  brand     String
+  model     String
+  code      String    @unique
+  bodyColor BodyColor
+  interior  Interior
+  carType   CarType
+  available Boolean
+}
+
+enum BodyColor {
+  BLACK
+  WHITE
+  GRAY
+  GREEN
+  RED
+  ORANGE
+}
+
+enum Interior {
+  BASE
+  LEATHER
+  MULTI
+}
+
+enum CarType {
+  CEDAN
+  SUV
+  SUPERCAR
+  CABRIO
+  PICKUP
+  COUPE
+}

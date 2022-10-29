@@ -1,0 +1,1 @@
+export type Interior = "BASE" | "LEATHER" | "MULTI";
