@@ -35,7 +35,7 @@
 		code: false
 	};
 
-	$: valid = validator.code || validator.brand || validator.model;
+	$: valid = validator.code && validator.brand && validator.model;
 
 	let showModal = false;
 	let loading = false;
