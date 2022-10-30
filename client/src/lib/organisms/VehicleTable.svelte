@@ -47,18 +47,19 @@
 						{/if}
 					</TH>
 				{/each}
-				<TH css="w-1/12">...</TH>
+				<TH css="w-[10%]">...</TH>
 			</TR>
 		</THead>
 		<tbody>
 			{#each data as row (row.id)}
 				<VehicleTableRow
 					{row}
+					on:delete-element
 					on:update-element
 					on:update-check-position={() => {
-						if (selectedName === Object.keys(row)[5]) {
+						if (selectedName === Object.keys(row)[6]) {
 							selectedOrder = !selectedOrder;
-							handleSort(Object.keys(row)[5]);
+							handleSort(Object.keys(row)[6]);
 						}
 					}}
 				/>

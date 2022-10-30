@@ -4,7 +4,7 @@
 	import VehicleTable from '../lib/organisms/VehicleTable.svelte';
 	import VehicleElementCreate from '../lib/organisms/VehicleElementCreate.svelte';
 	import Loading from '../lib/atoms/Loading.svelte';
-	import { get } from '../common/services/api';
+	import { ApiClass } from '../common/services/api';
 	import { sortFunc } from '../common/services/sort';
 	import { onMount } from 'svelte';
 	import Toast from '$lib/atoms/Toast.svelte';
@@ -19,7 +19,8 @@
 
 	export const refresh = async () => {
 		loaded = false;
-		let apiResponse = await get();
+		const getVehicle = new ApiClass();
+		let apiResponse = await getVehicle.getVehicle();
 
 		if (apiResponse.result) {
 			data = apiResponse.data as VehicleElement[];
@@ -49,9 +50,15 @@
 		}, 1);
 	};
 
+	const deleteElement = ({ detail }: { detail: string }) => {
+		ShowSuccess('Автомобиль успешно удален.');
+		data = data.filter((e) => detail !== e.id);
+	};
+
 	onMount(async () => {
 		await refresh();
 	});
+	console.log(data);
 </script>
 
 {#if loaded}
@@ -59,7 +66,12 @@
 		<Header title="Парк автомобилей">
 			<VehicleElementCreate on:create-element={create} {data} />
 		</Header>
-		<VehicleTable {data} on:get-sort-info={getSortInfo} on:update-element={updateElement} />
+		<VehicleTable
+			{data}
+			on:get-sort-info={getSortInfo}
+			on:update-element={updateElement}
+			on:delete-element={deleteElement}
+		/>
 	</div>
 {:else}
 	<Loading />

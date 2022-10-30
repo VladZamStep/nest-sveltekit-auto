@@ -3,11 +3,11 @@
 	import Button from '../atoms/Button.svelte';
 	import type { VehicleElement } from '../../common/models/types/VehicleElement';
 	import VehicleElementControl from './VehicleElementControl.svelte';
-	import { patch, post } from '../../common/services/api';
 	import { createEventDispatcher } from 'svelte';
 	import Circle from 'svelte-loading-spinners/dist/ts/Circle.svelte';
 	import { fly } from 'svelte/transition';
 	import { ShowError } from '../../common/utils/error';
+	import { ApiClass } from '../../common/services/api';
 
 	export let row: VehicleElement;
 
@@ -17,27 +17,26 @@
 
 	const dispatch = createEventDispatcher();
 
-	const updateCheckBox = async () => {
+	const updateCheckBox = async (id: string) => {
 		const element = {
-			model: row.model,
 			available: row.available
 		};
 		loadingCheckBox = true;
-		console.log(element);
-		let apiResponse = await patch(element);
-		console.log(apiResponse);
+		const updateVehicle = new ApiClass();
+		let apiResponse = await updateVehicle.patchVehicle(id, element);
 		if (apiResponse.result) {
 			dispatch('update-check-position');
 		} else {
-			ShowError('Не удалось изменить провайдер. Повторите попытку позже.');
+			ShowError('Не удалось изменить наличие авто. Повторите попытку позже.');
 			row.available = !row.available;
 		}
 		loadingCheckBox = false;
 	};
 
-	const handleUpdate = async (row: VehicleElement) => {
+	const handleUpdate = async (id: string, row: VehicleElement) => {
 		loading = true;
-		let apiResponse = await post(row);
+		const updateVehicle = new ApiClass();
+		let apiResponse = await updateVehicle.patchVehicle(id, row);
 		editable = !editable;
 		if (apiResponse.result) {
 			dispatch('update-element', row);
@@ -47,7 +46,17 @@
 		}
 		loading = false;
 	};
-	console.log(Object.keys(row));
+
+	const handleDelete = async (id: string) => {
+		loading = true;
+		const deleteVehicle = new ApiClass();
+		let apiResponse = await deleteVehicle.deleteVehicle(id);
+		if (apiResponse.result) {
+			dispatch('delete-element', id);
+		} else {
+			ShowError('Не удалось изменить чек. Повторите попытку позже.');
+		}
+	};
 	const notDisplayArr = ['id'];
 </script>
 
@@ -58,21 +67,24 @@
 				element={row}
 				{key}
 				readonly={key === 'brand' ? true : key === 'available' ? false : !editable}
-				on:change={() => updateCheckBox()}
+				on:change={() => updateCheckBox(row.id)}
 				loading={loadingCheckBox}
 			/>
 		</TD>
 	{/each}
 	<TD>
-		{#if editable}
-			{#if loading}
-				<Circle size={24} color="rgb(59 130 246)" duration="1s" />
+		<div class="flex gap-2">
+			{#if editable}
+				{#if loading}
+					<Circle size={24} color="rgb(59 130 246)" duration="1s" />
+				{:else}
+					<Button variant="done" icon on:click={() => handleUpdate(row.id, row)} color="green" />
+				{/if}
 			{:else}
-				<Button variant="done" icon on:click={() => handleUpdate(row)} color="green" />
+				<Button variant="edit" icon on:click={() => (editable = !editable)} />
 			{/if}
-		{:else}
-			<Button variant="edit" icon on:click={() => (editable = !editable)} />
-		{/if}
+			<Button variant="delete" icon on:click={() => handleDelete(row.id)} />
+		</div>
 	</TD>
 </tr>
 

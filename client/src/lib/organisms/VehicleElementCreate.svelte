@@ -5,13 +5,13 @@
 	import Title from '../atoms/Title.svelte';
 	import { VehicleElementsParams } from '../../common/consts/VehicleElementsParams.js';
 	import VehicleElementControl from '../molecules/VehicleElementControl.svelte';
-	import { post } from '../../common/services/api';
 	import { createEventDispatcher } from 'svelte';
 	import { fade, fly } from 'svelte/transition';
 	import { ShowError } from '../../common/utils/error';
 	import { BodyColor } from '../../common/models/enums/BodyColor';
 	import { Interior } from '../../common/models/enums/Interior';
 	import { CarType } from '../../common/models/enums/CarType';
+	import { ApiClass } from '../../common/services/api';
 
 	export let data: VehicleElement[] = [];
 
@@ -48,9 +48,10 @@
 
 	const create = async () => {
 		loading = true;
-		let apiResponse = await post(element);
+		const postVehicle = new ApiClass();
+		let apiResponse = await postVehicle.postVehicle(element);
 		if (apiResponse.result) {
-			dispatch('create-element', element);
+			dispatch('create-element', apiResponse.data);
 			element = {
 				brand: '',
 				model: '',

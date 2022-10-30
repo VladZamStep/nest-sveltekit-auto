@@ -2,9 +2,10 @@
 	import IoMdAdd from 'svelte-icons/io/IoMdAdd.svelte';
 	import IoMdCreate from 'svelte-icons/io/IoMdCreate.svelte';
 	import IoMdCheckmark from 'svelte-icons/io/IoMdCheckmark.svelte';
+	import IoMdTrash from 'svelte-icons/io/IoMdTrash.svelte';
 	import Circle from 'svelte-loading-spinners/dist/ts/Circle.svelte';
 
-	export let variant: 'add' | 'edit' | 'cancel' | 'done';
+	export let variant: 'add' | 'edit' | 'cancel' | 'done' | 'delete';
 	export let color: 'primary' | 'secondary' | 'green' = 'primary';
 	export let icon: true | undefined = undefined;
 	export let text: string | undefined = undefined;
@@ -46,6 +47,10 @@
 			{:else if variant === 'done'}
 				<span class="icon">
 					<IoMdCheckmark />
+				</span>
+			{:else if variant === 'delete'}
+				<span class="icon">
+					<IoMdTrash />
 				</span>
 			{/if}
 		{/if}

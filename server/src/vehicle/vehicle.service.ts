@@ -19,6 +19,30 @@ export class VehicleService {
             throw err;
         }
     }
+
+    async updateVehicle(id: string, data: VehicleDto): Promise<VehicleDto> {
+        try {
+            const updatedVehicle = this.prisma.vehicle.update({
+                where: {
+                    id: id,
+                },
+                data: data,
+            });
+            return updatedVehicle;
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    async deleteVehicle(id: string): Promise<boolean> {
+        try {
+            await this.prisma.vehicle.delete({ where: { id: id, } })
+            return true;
+        } catch (err) {
+            throw err;
+        }
+    }
+
     async getVehicles(): Promise<VehicleDto[]> {
         try {
             return await this.prisma.vehicle.findMany();

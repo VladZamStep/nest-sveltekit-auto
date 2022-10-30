@@ -54,7 +54,7 @@ export const VehicleElementsParams: {
 		{
 			name: 'available',
 			text: 'Наличие',
-			width: 'w-[12%]',
+			width: 'w-[10%]',
 			required: false,
 			validationFunction: () => true
 		}
